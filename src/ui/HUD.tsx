@@ -1,6 +1,7 @@
-import { useGame } from "./gameStore";
-import QuestIndicator from "./QuestIndicator";
 import { isTouch } from "../utils/device";
+import { useGame } from "./gameStore";
+import Minimap from "./Minimap";
+import QuestIndicator from "./QuestIndicator";
 
 export default function HUD() {
   const started = useGame((s) => s.started);
@@ -9,8 +10,11 @@ export default function HUD() {
 
   return (
     <div className="pointer-events-none absolute inset-0 z-10 select-none">
-      <div className="absolute left-4 top-4 rounded border border-amber-400/30 bg-black/60 px-3 py-1.5 text-sm tracking-widest text-amber-200 backdrop-blur-sm">
-        ⚑ {zone.toUpperCase()}
+      <div className="absolute left-4 top-4 flex flex-col items-start gap-2">
+        <div className="rounded border border-amber-400/30 bg-black/60 px-3 py-1.5 text-sm tracking-widest text-amber-200 backdrop-blur-sm">
+          ⚑ {zone.toUpperCase()}
+        </div>
+        <Minimap />
       </div>
       <div className="absolute right-4 top-4">
         <QuestIndicator />

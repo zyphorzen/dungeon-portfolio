@@ -98,3 +98,40 @@ export function playInteract() {
     o.stop(t + i * 0.08 + 0.4);
   });
 }
+
+export function playDoor(opening: boolean) {
+  if (!ctx || !master || !noise) return;
+  const t = ctx.currentTime;
+  const dur = opening ? 0.9 : 0.6;
+
+  const src = ctx.createBufferSource();
+  src.buffer = noise;
+  src.loop = true;
+  const f = ctx.createBiquadFilter();
+  f.type = "bandpass";
+  f.Q.value = 2;
+  f.frequency.setValueAtTime(opening ? 180 : 320, t);
+  f.frequency.linearRampToValueAtTime(opening ? 320 : 120, t + dur);
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(0.28, t + 0.1);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  src.connect(f);
+  f.connect(g);
+  g.connect(master);
+  src.start(t);
+  src.stop(t + dur + 0.05);
+
+  const o = ctx.createOscillator();
+  o.type = "sine";
+  o.frequency.setValueAtTime(opening ? 70 : 55, t);
+  o.frequency.exponentialRampToValueAtTime(35, t + dur);
+  const og = ctx.createGain();
+  og.gain.setValueAtTime(0.0001, t);
+  og.gain.exponentialRampToValueAtTime(0.3, t + 0.05);
+  og.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(og);
+  og.connect(master);
+  o.start(t);
+  o.stop(t + dur + 0.05);
+}
