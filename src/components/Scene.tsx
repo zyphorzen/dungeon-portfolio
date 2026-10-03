@@ -8,6 +8,7 @@ import ThirdPersonCamera from "../player/ThirdPersonCamera";
 import ZoneTracker from "../player/ZoneTracker";
 import InteractionSystem from "../interaction/InteractionSystem";
 import { isLowEnd } from "../utils/device";
+import Effects from "./Effects";
 
 export default function Scene() {
   const [dpr, setDpr] = useState(isLowEnd ? 1 : 1.5);
@@ -30,6 +31,7 @@ export default function Scene() {
       <ThirdPersonCamera />
       <InteractionSystem />
       <ZoneTracker />
+      <Effects />
     </Canvas>
   );
 }

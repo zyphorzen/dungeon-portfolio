@@ -15,3 +15,5 @@ function checkWebGL() {
 
 export const useLite =
   !checkWebGL() || new URLSearchParams(location.search).has("lite");
+
+export const noFx = new URLSearchParams(location.search).has("nofx");
