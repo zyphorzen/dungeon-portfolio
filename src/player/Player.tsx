@@ -1,10 +1,12 @@
-import { useRef } from "react";
+import { Suspense, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import type { Group } from "three";
 import { useKeyboard } from "./useKeyboard";
-import { look, playerPos } from "./state";
+import { look, motion, playerPos } from "./state";
 import { resolveCollision } from "./collision";
-import { isPortfolioOpen } from "../portfolio/store";
+import { isInputBlocked } from "../ui/gameStore";
+import { playStep } from "../audio/audio";
+import Character from "./Character";
 
 const WALK = 4;
 const SPRINT = 8;
@@ -12,11 +14,16 @@ const RADIUS = 0.4;
 
 export default function Player() {
   const ref = useRef<Group>(null);
+  const stepT = useRef(0);
   const keys = useKeyboard();
 
   useFrame((_, delta) => {
     const g = ref.current;
-    if (!g || isPortfolioOpen()) return;
+    if (!g) return;
+    if (isInputBlocked()) {
+      motion.speed = 0;
+      return;
+    }
     const dt = Math.min(delta, 0.05);
     const k = keys.current;
 
@@ -26,14 +33,14 @@ export default function Player() {
     if (f !== 0 || r !== 0) {
       const sin = Math.sin(look.yaw);
       const cos = Math.cos(look.yaw);
-
       let mx = -sin * f + cos * r;
       let mz = -cos * f - sin * r;
       const len = Math.hypot(mx, mz);
       mx /= len;
       mz /= len;
 
-      const speed = k.has("ShiftLeft") || k.has("ShiftRight") ? SPRINT : WALK;
+      const sprint = k.has("ShiftLeft") || k.has("ShiftRight");
+      const speed = sprint ? SPRINT : WALK;
       const [nx, nz] = resolveCollision(
         g.position.x + mx * speed * dt,
         g.position.z + mz * speed * dt,
@@ -41,10 +48,20 @@ export default function Player() {
       );
       g.position.x = nx;
       g.position.z = nz;
+      motion.speed = speed;
 
-      let diff = Math.atan2(mx, mz) - g.rotation.y;
+      stepT.current += dt;
+      if (stepT.current > (sprint ? 0.3 : 0.48)) {
+        stepT.current = 0;
+        playStep(sprint);
+      }
+
+      let diff = Math.atan2(-mx, -mz) - g.rotation.y;
       diff = Math.atan2(Math.sin(diff), Math.cos(diff));
       g.rotation.y += diff * Math.min(1, dt * 12);
+    } else {
+      motion.speed = 0;
+      stepT.current = 0.3;
     }
 
     playerPos.copy(g.position);
@@ -52,14 +69,9 @@ export default function Player() {
 
   return (
     <group ref={ref}>
-      <mesh position={[0, 0.75, 0]} castShadow>
-        <capsuleGeometry args={[0.35, 0.8, 4, 12]} />
-        <meshStandardMaterial color="#6b7a99" roughness={0.7} />
-      </mesh>
-      <mesh position={[0, 1.1, 0.35]} castShadow>
-        <boxGeometry args={[0.25, 0.15, 0.2]} />
-        <meshStandardMaterial color="#d9a441" />
-      </mesh>
+      <Suspense fallback={null}>
+        <Character />
+      </Suspense>
     </group>
   );
 }

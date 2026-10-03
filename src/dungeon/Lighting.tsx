@@ -1,7 +1,7 @@
 export default function Lighting() {
   return (
     <>
-      <ambientLight intensity={0.2} color="#4a4a6a" />
+      <hemisphereLight args={["#3a3a5a", "#1a120a", 0.45]} />
       <pointLight
         position={[0, 4.5, 0]}
         color="#ff8a3d"

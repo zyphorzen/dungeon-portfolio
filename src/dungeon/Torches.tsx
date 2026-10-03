@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import type { Mesh, PointLight } from "three";
 import type { TorchDef } from "./config";
 import { TORCHES } from "./layout";
+import { Sparkles } from "@react-three/drei";
 
 const BASE = 35;
 
@@ -43,6 +44,14 @@ function Torch({ pos, rotY }: TorchDef) {
         intensity={BASE}
         distance={14}
         decay={2}
+      />
+      <Sparkles
+        count={6}
+        scale={[0.3, 0.7, 0.3]}
+        position={[0, 0.9, 0.3]}
+        size={3}
+        speed={0.8}
+        color="#ffb347"
       />
     </group>
   );

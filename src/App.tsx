@@ -1,16 +1,19 @@
 import Scene from "./components/Scene";
 import InteractionPrompt from "./interaction/InteractionPrompt";
 import PortfolioPanel from "./portfolio/PortfolioPanel";
+import HUD from "./ui/HUD";
+import PauseMenu from "./ui/PauseMenu";
+import LoadingScreen from "./ui/LoadingScreen";
 
 export default function App() {
   return (
     <div className="relative h-screen w-screen">
       <Scene />
+      <HUD />
       <InteractionPrompt />
       <PortfolioPanel />
-      <p className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 text-sm text-amber-200/70">
-        Klik untuk kontrol mouse • WASD gerak • Shift lari • E interaksi
-      </p>
+      <PauseMenu />
+      <LoadingScreen />
     </div>
   );
 }

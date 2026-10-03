@@ -6,6 +6,7 @@ import { PROPS } from "./layout";
 import Interactable from "../interaction/Interactable";
 import { ROOMS } from "./config";
 import { openRoom } from "../portfolio/store";
+import { visitRoom } from "../ui/gameStore";
 
 const stone = { color: "#4a443d", roughness: 0.95 } as const;
 
@@ -135,7 +136,10 @@ export default function Props() {
                 id={`altar-${roomId}`}
                 label={`Periksa altar ${ROOMS.find((r) => r.id === roomId)?.label}`}
                 position={p.pos}
-                onInteract={() => openRoom(roomId)}
+                onInteract={() => {
+                  openRoom(roomId);
+                  visitRoom(roomId);
+                }}
               />
             )}
           </group>

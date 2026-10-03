@@ -3,6 +3,7 @@ import Walls from "./Walls";
 import Doors from "./Doors";
 import Torches from "./Torches";
 import Props from "./Props";
+import Particles from "./Particles";
 
 export default function Dungeon() {
   return (
@@ -12,6 +13,7 @@ export default function Dungeon() {
       <Doors />
       <Torches />
       <Props />
+      <Particles />
       <group position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <mesh>
           <ringGeometry args={[3, 3.15, 64]} />
