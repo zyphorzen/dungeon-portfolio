@@ -4,6 +4,7 @@ import Doors from "./Doors";
 import Torches from "./Torches";
 import Props from "./Props";
 import Particles from "./Particles";
+import RoomDecor from "./RoomDecor";
 
 export default function Dungeon() {
   return (
@@ -13,6 +14,7 @@ export default function Dungeon() {
       <Doors />
       <Torches />
       <Props />
+      <RoomDecor />
       <Particles />
       <group position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <mesh>

@@ -9,6 +9,7 @@ import type {
   TorchDef,
   WallDef,
 } from "./config";
+import { DECOR } from "./decor";
 
 export const WALLS: WallDef[] = [];
 export const DOORS: DoorDef[] = [];
@@ -16,6 +17,7 @@ export const FLOORS: FloorDef[] = [];
 export const TORCHES: TorchDef[] = [];
 export const PROPS: PropDef[] = [];
 export const ROOM_CENTERS = {} as Record<RoomId, [number, number]>;
+export const ROOM_ROT = {} as Record<RoomId, number>;
 
 const DIR: Record<Side, [number, number]> = {
   N: [0, -1],
@@ -133,6 +135,7 @@ for (const r of ROOMS) {
   wall("z", cx + ro, cz - roomHalf, cz + roomHalf, door === "E" ? [cz] : []);
 
   const [tx, tz] = DIR[door];
+  ROOM_ROT[r.id] = Math.atan2(tx, tz);
   TORCHES.push({
     pos: [cx - tx * (roomHalf - 0.15), TY, cz - tz * (roomHalf - 0.15)],
     rotY: Math.atan2(tx, tz),
@@ -155,10 +158,30 @@ const PROP_SIZE: Record<PropType, number> = {
   altar: 1.8,
 };
 
+const DECOR_COLLIDERS: WallDef[] = [];
+for (const r of ROOMS) {
+  const [cx, cz] = ROOM_CENTERS[r.id];
+  const th = ROOM_ROT[r.id];
+  const cs = Math.cos(th);
+  const sn = Math.sin(th);
+  for (const d of DECOR[r.id]) {
+    if (!d.solid) continue;
+    const rot = th + (d.rotY ?? 0);
+    const c = Math.abs(Math.cos(rot));
+    const s = Math.abs(Math.sin(rot));
+    const [w, dp] = d.solid;
+    DECOR_COLLIDERS.push({
+      pos: [cx + d.x * cs + d.z * sn, H / 2, cz - d.x * sn + d.z * cs],
+      size: [c * w + s * dp, H, s * w + c * dp],
+    });
+  }
+}
+
 export const COLLIDERS: WallDef[] = [
   ...WALLS,
   ...PROPS.map<WallDef>((p) => {
     const s = PROP_SIZE[p.type];
     return { pos: [p.pos[0], H / 2, p.pos[1]], size: [s, H, s] };
   }),
+  ...DECOR_COLLIDERS,
 ];
