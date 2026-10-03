@@ -28,6 +28,9 @@ export default function LoadingScreen() {
       >
         {ready ? "MASUK DUNGEON" : `MEMUAT ${pct}%`}
       </button>
+      <a href="?lite" className="text-xs text-stone-500 hover:text-amber-300">
+        Mode sederhana (tanpa 3D)
+      </a>
     </div>
   );
 }

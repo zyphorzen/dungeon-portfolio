@@ -1,3 +1,5 @@
+import { isLowEnd } from "../utils/device";
+
 export default function Lighting() {
   return (
     <>
@@ -8,8 +10,8 @@ export default function Lighting() {
         intensity={40}
         distance={20}
         decay={2}
-        castShadow
-        shadow-mapSize={[1024, 1024]}
+        castShadow={!isLowEnd}
+        shadow-mapSize={[512, 512]}
       />
     </>
   );

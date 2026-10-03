@@ -1,5 +1,6 @@
 import { useGame } from "./gameStore";
 import QuestIndicator from "./QuestIndicator";
+import { isTouch } from "../utils/device";
 
 export default function HUD() {
   const started = useGame((s) => s.started);
@@ -14,10 +15,12 @@ export default function HUD() {
       <div className="absolute right-4 top-4">
         <QuestIndicator />
       </div>
-      <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-amber-200/60">
-        WASD gerak • Shift lari • Mouse kamera • E interaksi • M suara • ESC
-        menu
-      </p>
+      {!isTouch && (
+        <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-amber-200/60">
+          WASD gerak • Shift lari • Mouse kamera • E interaksi • M suara • ESC
+          menu
+        </p>
+      )}
     </div>
   );
 }

@@ -3,12 +3,14 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { Vector3 } from "three";
 import { look, playerPos } from "./state";
 import { isBlocked } from "./collision";
+import { isTouch } from "../utils/device";
 
 const DISTANCE = 6;
 const TARGET_HEIGHT = 1.4;
 const SENSITIVITY = 0.0025;
 const PAD = 0.3;
 const STEPS = 12;
+const TOUCH_SENS = 0.005;
 
 const target = new Vector3();
 const offset = new Vector3();
@@ -20,23 +22,49 @@ export default function ThirdPersonCamera() {
   useEffect(() => {
     const el = gl.domElement;
     const locked = () => document.pointerLockElement === el;
+    const clampPitch = (p: number) => Math.max(0.05, Math.min(1.2, p));
 
     const onClick = () => {
-      if (!locked()) el.requestPointerLock();
+      if (!isTouch && !locked()) el.requestPointerLock();
     };
     const onMove = (e: MouseEvent) => {
       if (!locked()) return;
       look.yaw -= e.movementX * SENSITIVITY;
-      look.pitch = Math.max(
-        0.05,
-        Math.min(1.2, look.pitch + e.movementY * SENSITIVITY),
-      );
+      look.pitch = clampPitch(look.pitch + e.movementY * SENSITIVITY);
+    };
+
+    let id: number | null = null;
+    let lx = 0;
+    let ly = 0;
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType !== "touch" || id !== null) return;
+      id = e.pointerId;
+      lx = e.clientX;
+      ly = e.clientY;
+    };
+    const onTouchMove = (e: PointerEvent) => {
+      if (e.pointerId !== id) return;
+      look.yaw -= (e.clientX - lx) * TOUCH_SENS;
+      look.pitch = clampPitch(look.pitch + (e.clientY - ly) * TOUCH_SENS);
+      lx = e.clientX;
+      ly = e.clientY;
+    };
+    const onUp = (e: PointerEvent) => {
+      if (e.pointerId === id) id = null;
     };
 
     el.addEventListener("click", onClick);
+    el.addEventListener("pointerdown", onDown);
+    el.addEventListener("pointermove", onTouchMove);
+    el.addEventListener("pointerup", onUp);
+    el.addEventListener("pointercancel", onUp);
     document.addEventListener("mousemove", onMove);
     return () => {
       el.removeEventListener("click", onClick);
+      el.removeEventListener("pointerdown", onDown);
+      el.removeEventListener("pointermove", onTouchMove);
+      el.removeEventListener("pointerup", onUp);
+      el.removeEventListener("pointercancel", onUp);
       document.removeEventListener("mousemove", onMove);
     };
   }, [gl]);

@@ -6,7 +6,7 @@ export default function QuestIndicator() {
   const next = ROOMS.find((r) => !visited.includes(r.id));
 
   return (
-    <div className="w-56 rounded border border-amber-400/30 bg-black/60 p-3 text-sm text-stone-200 backdrop-blur-sm">
+    <div className="w-44 rounded border border-amber-400/30 bg-black/60 p-3 text-xs text-stone-200 backdrop-blur-sm sm:w-56 sm:text-sm">
       <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-amber-300">
         Quest • {visited.length}/{ROOMS.length}
       </p>

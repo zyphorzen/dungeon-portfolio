@@ -7,6 +7,7 @@ import { resolveCollision } from "./collision";
 import { isInputBlocked } from "../ui/gameStore";
 import { playStep } from "../audio/audio";
 import Character from "./Character";
+import { input } from "./input";
 
 const WALK = 4;
 const SPRINT = 8;
@@ -27,8 +28,8 @@ export default function Player() {
     const dt = Math.min(delta, 0.05);
     const k = keys.current;
 
-    const f = (k.has("KeyW") ? 1 : 0) - (k.has("KeyS") ? 1 : 0);
-    const r = (k.has("KeyD") ? 1 : 0) - (k.has("KeyA") ? 1 : 0);
+    const f = (k.has("KeyW") ? 1 : 0) - (k.has("KeyS") ? 1 : 0) + input.moveZ;
+    const r = (k.has("KeyD") ? 1 : 0) - (k.has("KeyA") ? 1 : 0) + input.moveX;
 
     if (f !== 0 || r !== 0) {
       const sin = Math.sin(look.yaw);
@@ -39,7 +40,7 @@ export default function Player() {
       mx /= len;
       mz /= len;
 
-      const sprint = k.has("ShiftLeft") || k.has("ShiftRight");
+      const sprint = k.has("ShiftLeft") || k.has("ShiftRight") || input.sprint;
       const speed = sprint ? SPRINT : WALK;
       const [nx, nz] = resolveCollision(
         g.position.x + mx * speed * dt,

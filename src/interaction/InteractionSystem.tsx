@@ -1,17 +1,13 @@
 import { useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { playerPos } from "../player/state";
-import { getInteractables, setCurrent, triggerCurrent } from "./store";
-import { isInputBlocked } from "../ui/gameStore";
-import { playInteract } from "../audio/audio";
+import { getInteractables, setCurrent } from "./store";
+import { tryInteract } from "./interact";
 
 export default function InteractionSystem() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.code === "KeyE" && !e.repeat && !isInputBlocked()) {
-        triggerCurrent();
-        playInteract();
-      }
+      if (e.code === "KeyE" && !e.repeat) tryInteract();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
