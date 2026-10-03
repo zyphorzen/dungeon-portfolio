@@ -1,15 +1,17 @@
 import { useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Vector3 } from "three";
-import { HUB } from "../dungeon/config";
 import { look, playerPos } from "./state";
+import { isBlocked } from "./collision";
 
 const DISTANCE = 6;
 const TARGET_HEIGHT = 1.4;
 const SENSITIVITY = 0.0025;
-const LIMIT = HUB.size / 2 - 0.3;
+const PAD = 0.3;
+const STEPS = 12;
 
 const target = new Vector3();
+const offset = new Vector3();
 const desired = new Vector3();
 
 export default function ThirdPersonCamera() {
@@ -42,14 +44,21 @@ export default function ThirdPersonCamera() {
   useFrame(({ camera }, delta) => {
     target.set(playerPos.x, TARGET_HEIGHT, playerPos.z);
     const cp = Math.cos(look.pitch);
-    desired.set(
-      target.x + Math.sin(look.yaw) * cp * DISTANCE,
-      target.y + Math.sin(look.pitch) * DISTANCE,
-      target.z + Math.cos(look.yaw) * cp * DISTANCE,
+    offset.set(
+      Math.sin(look.yaw) * cp * DISTANCE,
+      Math.sin(look.pitch) * DISTANCE,
+      Math.cos(look.yaw) * cp * DISTANCE,
     );
 
-    desired.x = Math.max(-LIMIT, Math.min(LIMIT, desired.x));
-    desired.z = Math.max(-LIMIT, Math.min(LIMIT, desired.z));
+    let k = 1;
+    for (let i = 1; i <= STEPS; i++) {
+      const f = i / STEPS;
+      if (isBlocked(target.x + offset.x * f, target.z + offset.z * f, PAD)) {
+        k = Math.max(0.15, (i - 1) / STEPS);
+        break;
+      }
+    }
+    desired.copy(target).addScaledVector(offset, k);
 
     camera.position.lerp(desired, 1 - Math.exp(-Math.min(delta, 0.05) * 14));
     camera.lookAt(target);

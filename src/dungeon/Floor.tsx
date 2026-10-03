@@ -1,10 +1,19 @@
-import { HUB } from "./config";
+import { FLOORS } from "./layout";
 
 export default function Floor() {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-      <planeGeometry args={[HUB.size, HUB.size]} />
-      <meshStandardMaterial color="#2a2622" roughness={0.95} />
-    </mesh>
+    <group>
+      {FLOORS.map((f, i) => (
+        <mesh
+          key={i}
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[f.pos[0], 0, f.pos[1]]}
+          receiveShadow
+        >
+          <planeGeometry args={f.size} />
+          <meshStandardMaterial color={f.color} roughness={0.95} />
+        </mesh>
+      ))}
+    </group>
   );
 }

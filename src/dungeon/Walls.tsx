@@ -1,4 +1,4 @@
-import { WALLS } from "./config";
+import { WALLS } from "./layout";
 
 export default function Walls() {
   return (
