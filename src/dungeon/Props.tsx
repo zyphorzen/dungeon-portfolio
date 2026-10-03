@@ -5,6 +5,7 @@ import type { PropDef } from "./config";
 import { PROPS } from "./layout";
 import Interactable from "../interaction/Interactable";
 import { ROOMS } from "./config";
+import { openRoom } from "../portfolio/store";
 
 const stone = { color: "#4a443d", roughness: 0.95 } as const;
 
@@ -119,24 +120,27 @@ function renderProp(p: PropDef) {
 export default function Props() {
   return (
     <group>
-      {PROPS.map((p, i) => (
-        <group key={i}>
-          <group
-            position={[p.pos[0], 0, p.pos[1]]}
-            rotation={[0, p.rotY ?? 0, 0]}
-          >
-            {renderProp(p)}
+      {PROPS.map((p, i) => {
+        const roomId = p.roomId;
+        return (
+          <group key={i}>
+            <group
+              position={[p.pos[0], 0, p.pos[1]]}
+              rotation={[0, p.rotY ?? 0, 0]}
+            >
+              {renderProp(p)}
+            </group>
+            {roomId && (
+              <Interactable
+                id={`altar-${roomId}`}
+                label={`Periksa altar ${ROOMS.find((r) => r.id === roomId)?.label}`}
+                position={p.pos}
+                onInteract={() => openRoom(roomId)}
+              />
+            )}
           </group>
-          {p.roomId && (
-            <Interactable
-              id={`altar-${p.roomId}`}
-              label={`Periksa altar ${ROOMS.find((r) => r.id === p.roomId)?.label}`}
-              position={p.pos}
-              onInteract={() => console.log("interact:", p.roomId)}
-            />
-          )}
-        </group>
-      ))}
+        );
+      })}
     </group>
   );
 }

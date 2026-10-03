@@ -4,6 +4,7 @@ import type { Group } from "three";
 import { useKeyboard } from "./useKeyboard";
 import { look, playerPos } from "./state";
 import { resolveCollision } from "./collision";
+import { isPortfolioOpen } from "../portfolio/store";
 
 const WALK = 4;
 const SPRINT = 8;
@@ -15,7 +16,7 @@ export default function Player() {
 
   useFrame((_, delta) => {
     const g = ref.current;
-    if (!g) return;
+    if (!g || isPortfolioOpen()) return;
     const dt = Math.min(delta, 0.05);
     const k = keys.current;
 

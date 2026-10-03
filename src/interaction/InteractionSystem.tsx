@@ -2,11 +2,13 @@ import { useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { playerPos } from "../player/state";
 import { getInteractables, setCurrent, triggerCurrent } from "./store";
+import { isPortfolioOpen } from "../portfolio/store";
 
 export default function InteractionSystem() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.code === "KeyE" && !e.repeat) triggerCurrent();
+      if (e.code === "KeyE" && !e.repeat && !isPortfolioOpen())
+        triggerCurrent();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
