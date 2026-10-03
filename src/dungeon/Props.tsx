@@ -3,6 +3,8 @@ import { useFrame } from "@react-three/fiber";
 import type { Mesh } from "three";
 import type { PropDef } from "./config";
 import { PROPS } from "./layout";
+import Interactable from "../interaction/Interactable";
+import { ROOMS } from "./config";
 
 const stone = { color: "#4a443d", roughness: 0.95 } as const;
 
@@ -118,12 +120,21 @@ export default function Props() {
   return (
     <group>
       {PROPS.map((p, i) => (
-        <group
-          key={i}
-          position={[p.pos[0], 0, p.pos[1]]}
-          rotation={[0, p.rotY ?? 0, 0]}
-        >
-          {renderProp(p)}
+        <group key={i}>
+          <group
+            position={[p.pos[0], 0, p.pos[1]]}
+            rotation={[0, p.rotY ?? 0, 0]}
+          >
+            {renderProp(p)}
+          </group>
+          {p.roomId && (
+            <Interactable
+              id={`altar-${p.roomId}`}
+              label={`Periksa altar ${ROOMS.find((r) => r.id === p.roomId)?.label}`}
+              position={p.pos}
+              onInteract={() => console.log("interact:", p.roomId)}
+            />
+          )}
         </group>
       ))}
     </group>

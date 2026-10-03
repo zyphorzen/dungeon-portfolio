@@ -3,6 +3,7 @@ import Dungeon from "../dungeon/Dungeon";
 import Lighting from "../dungeon/Lighting";
 import Player from "../player/Player";
 import ThirdPersonCamera from "../player/ThirdPersonCamera";
+import InteractionSystem from "../interaction/InteractionSystem";
 
 export default function Scene() {
   return (
@@ -13,6 +14,7 @@ export default function Scene() {
       <Dungeon />
       <Player />
       <ThirdPersonCamera />
+      <InteractionSystem />
     </Canvas>
   );
 }

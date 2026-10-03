@@ -140,7 +140,7 @@ for (const r of ROOMS) {
 
   const c = 3.7;
   PROPS.push(
-    { type: "altar", pos: [cx, cz], accent: r.accent },
+    { type: "altar", pos: [cx, cz], accent: r.accent, roomId: r.id },
     { type: "pillar", pos: [cx - c, cz - c] },
     { type: "pillar", pos: [cx + c, cz - c] },
     { type: "barrel", pos: [cx - c, cz + c] },
