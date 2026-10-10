@@ -1,0 +1,67 @@
+{
+  "nodes": [
+    {
+      "id": "zyphorzen",
+      "name": "zyphorzen",
+      "group": "core",
+      "val": 16,
+      "desc": "Kernel / Root of the system"
+    },
+
+    {
+      "id": "sec",
+      "name": "Security & CTF",
+      "group": "cluster",
+      "val": 10,
+      "desc": "Binary Exploitation & Reverse Engineering"
+    },
+    {
+      "id": "app",
+      "name": "Mobile & UI",
+      "group": "cluster",
+      "val": 10,
+      "desc": "Cross-platform client applications"
+    },
+    {
+      "id": "sys",
+      "name": "Systems & Arch",
+      "group": "cluster",
+      "val": 10,
+      "desc": "Low-level tools, OS environment, and pipelines"
+    },
+
+    {
+      "id": "taskora",
+      "name": "Taskora",
+      "group": "project",
+      "val": 6,
+      "desc": "Modular productivity app with typed forms & custom state.",
+      "tech": ["React Native", "Tamagui", "TypeScript"]
+    },
+    {
+      "id": "pwn-fmt",
+      "name": "FmtStr Exploit",
+      "group": "artifact",
+      "val": 5,
+      "desc": "Format string memory leak & arbitrary write mitigation analysis.",
+      "tech": ["GDB/GEF", "C", "x86-64"]
+    },
+    {
+      "id": "dotfiles",
+      "name": "Arch Dotfiles",
+      "group": "artifact",
+      "val": 5,
+      "desc": "Custom Wayland/Hyprland workstation config optimized for speed.",
+      "tech": ["Bash", "Linux", "Lua"]
+    }
+  ],
+  "links": [
+    { "source": "zyphorzen", "target": "sec" },
+    { "source": "zyphorzen", "target": "app" },
+    { "source": "zyphorzen", "target": "sys" },
+
+    { "source": "sec", "target": "pwn-fmt" },
+    { "source": "app", "target": "taskora" },
+    { "source": "sys", "target": "dotfiles" }
+  ]
+}
